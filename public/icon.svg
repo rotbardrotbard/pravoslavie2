@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 576" width="576" height="576">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="36%" r="85%"><stop offset="0" stop-color="#FCF8EE"/><stop offset="0.55" stop-color="#F3EAD3"/><stop offset="1" stop-color="#E6D6B2"/></radialGradient>
+    <radialGradient id="glowFill" cx="50%" cy="52%" r="55%">
+      <stop offset="0" stop-color="#E4B84C" stop-opacity="0.10"/>
+      <stop offset="1" stop-color="#E4B84C" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="domeFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EAC96C"/><stop offset="0.5" stop-color="#D5A93F"/><stop offset="1" stop-color="#A87B1C"/></linearGradient>
+    <linearGradient id="crossFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C79A2F"/><stop offset="1" stop-color="#8F6A15"/></linearGradient>
+    <clipPath id="domeClip"><path d="M288 176 C279 208 246 228 219 258 C190 290 178 322 190 350 C203 378 240 392 288 392 C336 392 373 378 386 350 C398 322 386 290 357 258 C330 228 297 208 288 176 Z"/></clipPath>
+  </defs>
+  <rect width="576" height="576" fill="url(#bg)"/>
+  <ellipse cx="288" cy="296" rx="235" ry="200" fill="url(#glowFill)"/><path d="M288 176 C279 208 246 228 219 258 C190 290 178 322 190 350 C203 378 240 392 288 392 C336 392 373 378 386 350 C398 322 386 290 357 258 C330 228 297 208 288 176 Z" fill="url(#domeFill)"/><g clip-path="url(#domeClip)"><ellipse cx="248" cy="316" rx="20" ry="54" fill="#FFF3D0" opacity="0.38" transform="rotate(14 248 316)"/><path d="M288 188 C284 244 284 322 288 382" stroke="#8A6212" stroke-opacity="0.22" stroke-width="3" fill="none"/></g><rect x="212" y="400" width="152" height="15" rx="7" fill="#2B3542"/><rect x="280" y="94" width="16" height="76" rx="3" fill="url(#crossFill)"/><rect x="266" y="114" width="44" height="11" rx="3" fill="url(#crossFill)"/><rect x="260" y="142" width="56" height="11" rx="3" fill="url(#crossFill)" transform="rotate(12 288 147)"/>
+</svg>
