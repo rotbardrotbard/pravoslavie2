@@ -105,7 +105,7 @@
   --an-tile: #f1f2f3;
   --an-ink: #181d24;
   --an-ink-soft: #777f86;
-  --an-ink-faint: #aeb3b8;
+  --an-ink-faint: #626c76;
   --an-line: #e6e8ea;
   --an-line-strong: #d9dcde;
   --an-accent: #a81414;
@@ -146,7 +146,7 @@
   --an-tile: #262e37;
   --an-ink: #e7eaed;
   --an-ink-soft: #98a2ab;
-  --an-ink-faint: #6a7580;
+  --an-ink-faint: #8a949e;
   --an-line: #2b333c;
   --an-line-strong: #39434d;
   --an-accent: #d4635a;
@@ -162,6 +162,13 @@
 
 .pr-parchment {
   background: var(--an-bg);
+}
+
+/* В тёмной теме акцентные поверхности светлые, поэтому текст на них
+   должен быть тёмным, а не белым. */
+.pr-dark .pr-btn-primary,
+.pr-dark .pr-chip-active {
+  color: #12161b;
 }
 
 /* Гротеск — базовый шрифт интерфейса (аналог Mabry) */
