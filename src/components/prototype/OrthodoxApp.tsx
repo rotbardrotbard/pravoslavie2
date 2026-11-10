@@ -327,12 +327,12 @@ export default function OrthodoxApp() {
             aria-label="Уведомления"
             onClick={() => {
               if (notif) {
-                toast("Уведомления включены: правило, праздники, именины");
+                toast("Разрешение ОК получено; расписание напоминаний ещё не подключено");
                 return;
               }
               requestNotifications().then((ok) => {
                 setNotif(ok);
-                toast(ok ? "Уведомления ОК подключены" : "Уведомления включатся после публикации в ОК");
+                toast(ok ? "Разрешение ОК получено; расписание напоминаний ещё не подключено" : "Не удалось получить разрешение ОК");
               });
             }}
             className="w-9 h-9 rounded-lg flex items-center justify-center hover:bg-black/5 transition-colors"
