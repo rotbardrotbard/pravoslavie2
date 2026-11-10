@@ -232,18 +232,18 @@ export default function MoreScreen({
             Размер шрифта
           </span>
           <div className="flex gap-1">
-            {([100, 115, 130] as const).map((v, i) => (
+            {([100, 115, 130, 150, 175, 200] as const).map((v) => (
               <button
                 key={v}
                 onClick={() => {
                   setTextScale(v);
-                  toast(["Обычный шрифт", "Крупный шрифт", "Очень крупный шрифт"][i]);
+                  toast(v === 100 ? "Обычный шрифт" : `Размер шрифта: ${v}%`);
                 }}
                 className={`pr-chip ${textScale === v ? "pr-chip-active" : ""}`}
-                aria-label={["Обычный шрифт", "Крупный шрифт", "Очень крупный шрифт"][i]}
+                aria-label={v === 100 ? "Обычный шрифт" : `Размер шрифта ${v}%`}
                 aria-pressed={textScale === v}
               >
-                {["A", "A+", "A++"][i]}
+                {v === 100 ? "A" : `A+${v}`}
               </button>
             ))}
           </div>
