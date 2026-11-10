@@ -95,16 +95,18 @@ export default function PrayerScreen({
               Дальше
             </button>
           )}
-          <button
-            onClick={() => {
-              onComplete(reading.kind);
-              setReading(null);
-              setIdx(0);
-            }}
-            className="pr-btn flex-1 pr-btn-accent"
-          >
-            <Flame size={14} /> Молюсь
-          </button>
+          {idx === reading.rule.items.length - 1 && (
+            <button
+              onClick={() => {
+                onComplete(reading.kind);
+                setReading(null);
+                setIdx(0);
+              }}
+              className="pr-btn flex-1 pr-btn-accent"
+            >
+              <Flame size={14} /> Завершить правило
+            </button>
+          )}
         </div>
       </div>
     );
