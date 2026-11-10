@@ -133,10 +133,12 @@ export function todayKey(d = new Date()): string {
 
 /* ── Счётчик молитвы: считаем непрерывную серию дней с отметками ── */
 export function computeStreak(log: string[]): number {
-  const days = new Set(log);
+  /* Поддерживаем старый формат YYYY-MM-DD и новый YYYY-MM-DD:morning/evening.
+     Для серии важен день, а не количество отмеченных правил за этот день. */
+  const days = new Set(log.map((entry) => entry.split(":")[0]).filter(Boolean));
   if (days.size === 0) return 0;
   const one = 86_400_000;
-  // Точка отсчёта: сегодня, если есть отметка; иначе вчера (серия не сломана)
+  // Точка отсчёта: сегодня, если есть отметка; иначе вчера (серия не сломана).
   let cursor = new Date();
   if (!days.has(todayKey(cursor))) {
     cursor = new Date(Date.now() - one);
