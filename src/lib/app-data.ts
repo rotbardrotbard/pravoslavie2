@@ -53,6 +53,7 @@ export const STORAGE_KEYS = {
   level: "pr.level",
   interest: "pr.interest",
   geo: "pr.geo",
+  geoConsent: "pr.geoConsent.v2", // отдельное явное согласие, не наследуем старый default=true
   notif: "pr.notif",
   evening: "pr.evening",
   fontBig: "pr.fontBig",
