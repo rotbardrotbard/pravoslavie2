@@ -156,8 +156,7 @@ const EXTRA_SAINTS: Record<string, string[]> = {
 /* ── Именины: имя → даты памяти святых покровителей ── */
 export const NAME_DAYS: Record<string, Record<string, string>> = {
   "Иван": { "11-01": "блаженный Иоанн, сын Клеопаты", "11-13": "свт. Иоанн Златоуст" },
-  "Мария": { "11-04": "Казанская икона Божией Матери — именины Мари" },
-  "Дмитрий": { "11-08": "вмч. Димитрий Солунский" },
+    "Дмитрий": { "11-08": "вмч. Димитрий Солунский" },
   "Димитрий": { "11-08": "вмч. Димитрий Солунский" },
   "Иоанн": { "11-01": "блаженный Иоанн", "11-13": "свт. Иоанн Златоуст" },
   "Кузьма": { "11-14": "бссрр. Косма" },
@@ -318,7 +317,7 @@ export function getDayInfo(date: Date, today = new Date()): DayInfo {
   const inGreatLent = !!greatLentStart && !!greatLentEnd && inRange(d, greatLentStart, greatLentEnd);
   const pentecostDate = pascha ? new Date(pascha.getTime() + 49 * DAY) : null;
   const apostlesStart = pentecostDate ? new Date(pentecostDate.getTime() + 8 * DAY) : null;
-  const apostlesEnd = dateAt(year, 6, 11);
+  const apostlesEnd = dateAt(year, 5, 28);
   const inApostlesFast =
     !!pascha &&
     pascha.getFullYear() === year &&
