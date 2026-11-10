@@ -374,7 +374,7 @@ export function getDayInfo(date: Date, today = new Date()): DayInfo {
     if (weeks >= 0) glas = `Глас ${ordinal((weeks % 8) + 1)}-й`;
   }
 
-  /* Святые дня — полный месяцеслов (menology/): у каждого описание */
+  /* Святые дня из локального месяцеслова; полную ежедневную запись можно открыть в «Азбуке веры». */
   const saintRecs = saintsOfDay(key);
   const saints: string[] = saintRecs.map((r) => (r.year ? `${r.name} (${r.year})` : r.name));
   const notices: string[] = [];
