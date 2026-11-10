@@ -307,7 +307,7 @@ export default function MapScreen({
               className="absolute top-2 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-full text-[0.6rem] pr-serif pointer-events-none"
               style={{ background: "rgba(185,137,30,.92)", color: "#fff" }}
             >
-              База РПЦ недоступна — резервная подборка храмов Москвы
+              {spots.length > 0 ? "База РПЦ недоступна — резервная подборка храмов Москвы" : "База РПЦ недоступна — резервных данных для этой области нет"}
             </div>
           )}
         </div>
