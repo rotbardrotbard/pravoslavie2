@@ -247,7 +247,7 @@ export const prayersLibrary: Record<string, Prayer> = {
       },
       {
         title: "Слава Тебе",
-        body: "Слава Тебе, Боже наш, слава Тебе, на всяк случай, за вся.",
+        body: "Слава Тебе, Боже наш, слава Тебе.",
       },
     ],
   },
