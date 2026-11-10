@@ -135,7 +135,7 @@ export default function OrthodoxApp() {
       }
       setReady(true);
       /* Гео — только если пользователь разрешил ранее (кнопкой в онбординге/Ещё) */
-      const geoAllowed = lsGet<boolean>(STORAGE_KEYS.geo, false);
+      const geoAllowed = lsGet<boolean>(STORAGE_KEYS.geoConsent, false);
       if (geoAllowed) {
         const p = await getGeoPoint();
         if (p) {
@@ -162,6 +162,7 @@ export default function OrthodoxApp() {
     lsSet(STORAGE_KEYS.interests, ints);
     lsSet(STORAGE_KEYS.profile, prof);
     lsSet(STORAGE_KEYS.geo, g);
+    lsSet(STORAGE_KEYS.geoConsent, g);
     setScreen("home");
     toast(lv === "beginner" ? "Мир вам! Начнём с малого — всё подскажем" : "Мир вам! Рады видеть снова");
     if (g) {
