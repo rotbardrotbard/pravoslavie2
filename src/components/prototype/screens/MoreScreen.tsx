@@ -48,7 +48,7 @@ export default function MoreScreen({
   inside: boolean;
 }) {
   const [about, setAbout] = useState(false);
-  const [notifSwitch, setNotifSwitch] = useState(true);
+  const [notifSwitch, setNotifSwitch] = useState(false);
 
   /* Святой покровитель и именины по данным крещения из анкеты */
   const patron = (() => {
@@ -210,13 +210,13 @@ export default function MoreScreen({
         <SwitchRow
           icon={<Bell size={15} />}
           label="Уведомления ОК"
-          note="Правило, праздники и именины"
+          note="Разрешение ОК; расписание напоминаний ещё не подключено"
           checked={notifSwitch}
           onChange={async (v) => {
             if (v) {
               const ok = await requestNotifications();
-              setNotifSwitch(true);
-              toast(ok ? "Уведомления включены" : "Уведомления подключатся после публикации в ОК");
+              setNotifSwitch(ok);
+              toast(ok ? "Разрешение ОК получено. Расписание напоминаний появится после подключения сервиса." : "Не удалось получить разрешение ОК");
             } else {
               setNotifSwitch(false);
               toast("Уведомления выключены — включить можно и в настройках ОК");
