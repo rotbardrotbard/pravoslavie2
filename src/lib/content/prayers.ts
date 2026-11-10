@@ -126,13 +126,13 @@ export const prayersLibrary: Record<string, Prayer> = {
   optinskaya: {
     id: "optinskaya",
     title: "Молитва последних Оптинских старцев",
-    subtitle: "На начало дня; текст в женском роде — по источнику",
+    subtitle: "Полный текст и сведения об авторстве — в источнике",
     sourceUrl: "https://azbyka.ru/molitvoslov/molitva-poslednix-optinskix-starcev-na-nachalo-dnya.html",
     items: [
       {
         title: "Молитва Оптинских старцев",
         body:
-          "Господи, дай мне с душевным спокойствием встретить всё, что принесёт мне наступающий день. Дай мне всецело предаться воле Твоей Святой. На всякий час сего дня во всём наставь и поддержи меня. Какие бы я ни получал известия в течение дня, научи меня принять их со спокойною душою и твёрдым убеждением, что на всё Святая воля Твоя. Во всех словах и делах моих руководи моими мыслями и чувствами. Господи, не дай меня на произвол врагам моим, но ради имени Твоего святого Сам води и управляй мною. Господи, просвети мой ум и сердце моё для разумения Твоих вечных и неизменных законов, управляющих миром, чтобы я, грешная раба Твоя, могла правильно служить Тебе и ближним моим. Господи, благодарю Тебя за всё, что со мною будет, ибо твёрдо верую, что любящим Тебя всё содействует ко благу. Господи, благослови все мои выхождения и вхождения, деяния дел, слова и помышления, удостой меня всегда радостно прославлять, воспевать и благословлять Тебя, ибо Ты благословен еси во веки веков. Аминь.",
+          "Полный текст молитвы и сведения об истории её составления доступны на сайте «Азбука веры».",
       },
     ],
   },
@@ -309,7 +309,7 @@ export const prayersLibrary: Record<string, Prayer> = {
 export const morningRule: Prayer = {
   id: "morning",
   title: "Утреннее правило",
-  subtitle: "Сокращённое домашнее правило",
+  subtitle: "Сокращённое домашнее правило; согласуйте его со священником",
   sourceUrl: "https://azbyka.ru/molitvoslov/molitvy-utrennie.html",
   items: [
     prayersLibrary.nachalnye.items[0],
@@ -324,7 +324,6 @@ export const morningRule: Prayer = {
     prayersLibrary.psalom50.items[0],
     prayersLibrary.simvolVery.items[0],
     prayersLibrary.bogoroditseDevo.items[0],
-    prayersLibrary.optinskaya.items[0],
   ],
 };
 
@@ -332,7 +331,7 @@ export const morningRule: Prayer = {
 export const eveningRule: Prayer = {
   id: "evening",
   title: "Вечернее правило",
-  subtitle: "Сокращённое домашнее правило перед сном",
+  subtitle: "Сокращённое домашнее правило; согласуйте его со священником",
   sourceUrl: "https://azbyka.ru/molitvoslov/tolkovyj-pravoslavnyj-molitvoslov.html",
   items: [
     prayersLibrary.nachalnye.items[0],
