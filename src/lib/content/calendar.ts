@@ -235,6 +235,18 @@ export function nameDaysForName(name: string): { dateKey: string; saint: string 
     .sort((a, b) => a.dateKey.localeCompare(b.dateKey));
 }
 
+/* Святцы для произвольной даты (например, даты крещения).
+   Праздник возвращается отдельно, святые — только из записей kind="saint". */
+export function saintsForDate(d: Date): { feast: string | null; saints: string[] } {
+  const key = mmdd(new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12));
+  const recs = saintsOfDay(key);
+  const feast = recs.find((r) => r.kind === "great" || r.kind === "feast" || r.kind === "icon");
+  const saints = recs
+    .filter((r) => r.kind === "saint")
+    .map((r) => (r.year ? `${r.name} (${r.year})` : r.name));
+  return { feast: feast ? feast.name : null, saints };
+}
+
 /* «12-19» или «2010-12-19» → «19 декабря» */
 export function formatSaintsDate(dateKey: string): string {
   const parts = dateKey.split("-");
