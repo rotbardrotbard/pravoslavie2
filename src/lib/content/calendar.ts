@@ -14,7 +14,7 @@
    у известных святых есть полное житие в библиотеке (lifeId).
    ═══════════════════════════════════════════════════════════ */
 
-import { saintsOfDay, type SaintRec } from "../../../menology/types";
+import { MENOLOGY, saintsOfDay, type SaintRec } from "../../../menology/types";
 
 export type FeastKind = "great" | "feast" | "icon" | "saint" | "post";
 
@@ -160,48 +160,79 @@ const EXTRA_SAINTS: Record<string, string[]> = {
 };
 
 /* ── Именины: имя → даты памяти святых покровителей ── */
-export const NAME_DAYS: Record<string, Record<string, string>> = {
-  "Иван": { "11-01": "блаженный Иоанн, сын Клеопаты", "11-13": "свт. Иоанн Златоуст" },
-  "Дмитрий": { "11-08": "вмч. Димитрий Солунский" },
-  "Димитрий": { "11-08": "вмч. Димитрий Солунский" },
-  "Иоанн": { "11-01": "блаженный Иоанн", "11-13": "свт. Иоанн Златоуст" },
-  "Кузьма": { "11-14": "бссрр. Косма" },
-  "Михаил": { "11-21": "Собор Архистратига Михаила" },
-  "Екатерина": { "12-07": "вмц. Екатерина" },
-  "Филипп": { "11-27": "св. ап. Филипп" },
-  "Матвей": { "11-29": "ап. и еванг. Матфей" },
-  "Матфей": { "11-29": "ап. и еванг. Матфей" },
-  "Андрей": { "11-30": "св. ап. Андрей Первозванный" },
-  "Александр": { "12-06": "блгв. вел. кн. Александр Невский" },
-  "Спиридон": { "12-13": "свт. Спиридон Тримифунтский" },
-  "Николай": { "12-19": "свт. Николай Чудотворец" },
-  "Степан": { "12-27": "первомч. Стефан" },
-  "Стефан": { "12-27": "первомч. Стефан" },
-  "Василий": { "01-14": "свт. Василий Великий" },
+export /* Сопоставление крещальных имён с формами, встречающимися в месяцеслове.
+   Имена в святцах обычно стоят в родительном падеже (Иоанна, Марии, Павла). */
+const NAME_STEMS: Record<string, string[]> = {
+  "иван": ["иоанн", "иван"],
+  "иоанн": ["иоанн", "иван"],
+  "дмитрий": ["димитр", "дмитр"],
+  "димитрий": ["димитр", "дмитр"],
+  "сергей": ["серги", "серг"],
+  "сергий": ["серги", "серг"],
+  "федор": ["феодор", "федор"],
+  "фёдор": ["феодор", "федор"],
+  "петр": ["петр"],
+  "пётр": ["петр"],
+  "павел": ["павл"],
+  "николай": ["никола"],
+  "александр": ["александр"],
+  "мария": ["мари"],
+  "анна": ["анн"],
+  "екатерина": ["екатерин"],
+  "михаил": ["михаил"],
+  "василий": ["васили"],
+  "георгий": ["георги"],
+  "алексей": ["алекси"],
+  "андрей": ["андре"],
+  "елена": ["елен"],
+  "ольга": ["ольг"],
+  "татьяна": ["татьян", "татиан"],
+  "наталья": ["натал"],
+  "ирина": ["ирин"],
+  "людмила": ["людмил"],
+  "вера": ["вер"],
+  "надежда": ["надежд"],
+  "любовь": ["любов"],
+  "кузьма": ["косм", "кузьм"],
+  "косма": ["косм"],
+  "матвей": ["матф"],
+  "матфей": ["матф"],
+  "степан": ["стефан", "степан"],
+  "стефан": ["стефан", "степан"],
+  "спиридон": ["спиридон"],
 };
+
+function normalizeName(value: string): string {
+  return value.trim().toLocaleLowerCase("ru-RU").replace(/ё/g, "е");
+}
+
+function nameMatchesSaint(name: string, saintName: string): boolean {
+  const normalized = normalizeName(name);
+  const stems = NAME_STEMS[normalized] ?? [normalized];
+  const tokens = normalizeName(saintName).match(/[а-я]+/g) ?? [];
+  return tokens.some((token) => stems.some((stem) => stem.length >= 3 && token.startsWith(stem)));
+}
 
 export function getNameDay(name: string | null, date: Date): string | null {
   if (!name) return null;
-  const map = NAME_DAYS[name.trim()];
-  if (!map) return null;
-  const key = mmdd(date);
-  return map[key] ?? null;
+  const matches = saintsOfDay(mmdd(date)).filter((record) =>
+    record.kind === "saint" && nameMatchesSaint(name, record.name)
+  );
+  return matches[0]?.name ?? null;
 }
 
-/* ── Святцы для произвольной даты (напр., дата крещения) ── */
-export function saintsForDate(d: Date): { feast: string | null; saints: string[] } {
-  const key = mmdd(new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12));
-  const recs = saintsOfDay(key);
-  const feast = recs.find((r) => r.kind === "great" || r.kind === "feast" || r.kind === "icon");
-  const saints = recs.map((r) => (r.year ? `${r.name} (${r.year})` : r.name));
-  return { feast: feast ? feast.name : null, saints };
-}
-
-/* Все памяти святых покровителей по имени (для анкеты) */
+/* Все даты памяти святых, чьи имена соответствуют крещальному имени.
+   Это справочный список, а не автоматическое назначение небесного покровителя. */
 export function nameDaysForName(name: string): { dateKey: string; saint: string }[] {
-  const map = NAME_DAYS[name.trim()];
-  if (!map) return [];
-  return Object.entries(map).map(([dateKey, saint]) => ({ dateKey, saint }));
+  if (!name.trim()) return [];
+  const byDate = new Map<string, string>();
+  for (const record of MENOLOGY) {
+    if (record.kind !== "saint" || !nameMatchesSaint(name, record.name)) continue;
+    if (!byDate.has(record.key)) byDate.set(record.key, record.name);
+  }
+  return [...byDate.entries()]
+    .map(([dateKey, saint]) => ({ dateKey, saint }))
+    .sort((a, b) => a.dateKey.localeCompare(b.dateKey));
 }
 
 /* «12-19» или «2010-12-19» → «19 декабря» */
@@ -473,8 +504,8 @@ export function getDayInfo(date: Date, today = new Date()): DayInfo {
     weekdayShort: WEEKDAYS_SHORT[weekdayIdx],
     dateNew: fmtDate(d),
     dateOld: fmtOld(oldStyle(d)),
-    weekLabel: weekLabel || "Седмица по Пятидесятнице",
-    glas: glas || "Глас —",
+    weekLabel: weekLabel || "Церковный календарь",
+    glas: glas || "Глас не указан",
     feast,
     saints: [...notices, ...saints],
     saintRecs,
