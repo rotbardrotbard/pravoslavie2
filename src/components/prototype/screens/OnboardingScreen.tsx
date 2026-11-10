@@ -43,8 +43,8 @@ export default function OnboardingScreen({
   const [step, setStep] = useState(0); // 0 — заставка, 1..3 — анкета
   const [level, setLevel] = useState<Level | null>(null);
   const [interestsSel, setInterestsSel] = useState<Interest[]>([]);
-  const [geo, setGeo] = useState(true);
-  const [notif, setNotif] = useState(true);
+  const [geo, setGeo] = useState(false);
+  const [notif, setNotif] = useState(false);
 
   /* Профиль крещения */
   const [baptName, setBaptName] = useState("");
@@ -248,7 +248,7 @@ export default function OnboardingScreen({
             Крещение и святцы
           </h2>
           <p className="pr-serif text-[0.72rem] mb-4" style={{ color: "var(--an-ink-soft)" }}>
-            Необязательно — но с этими данными приложение напомнит именины и покажет святого покровителя.
+            Необязательно — эти данные помогут найти памятные даты в святцах. Выбор небесного покровителя лучше подтвердить со священником.
           </p>
 
           <div className="orn-card px-3.5 py-3 mb-4">
@@ -313,7 +313,7 @@ export default function OnboardingScreen({
                   )
                 ) : (
                   <div className="pr-serif text-[0.68rem]" style={{ color: "var(--an-ink-soft)" }}>
-                    Укажите дату крещения — покажем по святцам, какой святой покровительствует этому дню
+                    Укажите дату крещения — покажем святых, память которых совершается в этот день
                   </div>
                 )}
               </div>
@@ -331,7 +331,7 @@ export default function OnboardingScreen({
               <span className="flex-1">
                 <span className="pr-serif font-bold text-[0.82rem] block">Геолокация</span>
                 <span className="pr-serif text-[0.66rem]" style={{ color: "var(--an-ink-soft)" }}>
-                  Показывать храмы и святыни рядом
+                  Определять ближайшие храмы по вашему местоположению
                 </span>
               </span>
               <Switch checked={geo} onChange={setGeo} label="Геолокация" />
@@ -347,7 +347,7 @@ export default function OnboardingScreen({
               <span className="flex-1">
                 <span className="pr-serif font-bold text-[0.82rem] block">Уведомления ОК</span>
                 <span className="pr-serif text-[0.66rem]" style={{ color: "var(--an-ink-soft)" }}>
-                  Напоминание о правиле и большие праздники
+                  Разрешить приложению отправлять уведомления ОК, если функция поддерживается
                 </span>
               </span>
               <Switch checked={notif} onChange={setNotif} label="Уведомления" />
