@@ -65,7 +65,7 @@ export default function HomeScreen({
   const day = useMemo(() => getDayInfo(now), [now]);
   const verse = useMemo(() => verseOfDay(now), [now]);
   const nameDay = useMemo(
-    () => getNameDay(baptismName || userName, now),
+    () => getNameDay(baptismName, now),
     [baptismName, userName, now]
   );
   const liked = likedVerses.includes(verse.ref);
