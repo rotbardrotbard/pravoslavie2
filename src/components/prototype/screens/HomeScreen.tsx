@@ -336,7 +336,7 @@ export default function HomeScreen({
           </span>
           <span className="flex-1 min-w-0">
             <span className="pr-display text-[1.02rem] block text-white">
-              Сегодня именины
+              Сегодня память святого с вашим именем
             </span>
             <span className="text-[0.72rem] leading-snug" style={{ color: "rgba(255,255,255,.8)" }}>
               {nameDay}
