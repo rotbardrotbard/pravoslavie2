@@ -6,6 +6,7 @@ import { PhotoBanner, SectionTitle } from "../bits";
 import ReaderOverlay from "../ReaderOverlay";
 import type { ReaderTarget } from "@/lib/app-data";
 import {
+  azbykaDayUrl,
   dayKey,
   getDayInfo,
   monthGrid,
@@ -77,7 +78,17 @@ export default function CalendarScreen({
         </span>
       </div>
 
-      {/* Святые дня — полный месяцеслов: у каждого описание, у известных — полное житие */}
+      <a
+        href={azbykaDayUrl(info.date)}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block text-center pr-serif text-[0.72rem] underline underline-offset-2 mb-3"
+        style={{ color: "var(--an-ink-soft)" }}
+      >
+        Сверить дату и месяцеслов на «Азбуке веры»
+      </a>
+
+      {/* Святые дня — месяцеслов приложения; полную ежедневную службу можно сверить по источнику */}
       <SectionTitle className="mb-2">
         {selected ? "Выбранный день" : "Сегодня — кого Церковь вспоминает"}
       </SectionTitle>
