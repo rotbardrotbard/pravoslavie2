@@ -172,9 +172,17 @@ export default function MapScreen({
         await renderMarkers(list);
       } catch (e) {
         if (ac.signal.aborted) return;
-        /* Официальная база недоступна — показываем избранные храмы Москвы */
+        /* Резервная подборка содержит только храмы Москвы.
+           Не показываем её в других регионах как будто это местные храмы. */
         setLiveMode(false);
-        const list = withKm(staticTemples.map(staticTempleToSpot));
+        const intersectsMoscow =
+          bounds.south <= 56.2 &&
+          bounds.north >= 55.0 &&
+          bounds.west <= 38.5 &&
+          bounds.east >= 36.0;
+        const list = intersectsMoscow
+          ? withKm(staticTemples.map(staticTempleToSpot))
+          : [];
         setSpots(list);
         await renderMarkers(list);
       } finally {
@@ -299,7 +307,7 @@ export default function MapScreen({
               className="absolute top-2 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-full text-[0.6rem] pr-serif pointer-events-none"
               style={{ background: "rgba(185,137,30,.92)", color: "#fff" }}
             >
-              База РПЦ недоступна — избранные храмы Москвы
+              База РПЦ недоступна — резервная подборка храмов Москвы
             </div>
           )}
         </div>
@@ -346,11 +354,11 @@ export default function MapScreen({
 
         {!geoAsked && (
           <button
-            onClick={() => setGeoAsked(true)}
+            onClick={askGeo}
             className="orn-card-soft px-3.5 py-2.5 mb-3 pr-serif text-[0.74rem] w-full text-left"
             style={{ color: "var(--an-ink)" }}
           >
-            Показываем храмы от центра города. Разрешите геолокацию, чтобы увидеть ближайшие.
+            Чтобы найти храмы рядом с вами, нажмите «Где я» и разрешите доступ к местоположению.
           </button>
         )}
 
@@ -359,7 +367,7 @@ export default function MapScreen({
             ? `Найдено: ${spots.length}`
             : liveMode
               ? `В кадре — ${spots.length} объектов`
-              : `Ближайшие ${spots.length}`}
+              : geo.accurate ? `Ближайшие ${spots.length}` : `Объекты в области карты: ${spots.length}`}
         </SectionTitle>
 
         <div className="flex flex-col gap-2">
