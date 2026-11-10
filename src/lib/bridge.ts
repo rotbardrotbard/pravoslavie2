@@ -27,8 +27,10 @@ async function safeSend<T>(method: string, params?: Record<string, unknown>, ms 
   return new Promise<T>((resolve, reject) => {
     const timer = setTimeout(() => reject(new Error("timeout")), ms);
     try {
-      bridge
-        .send<T>(method, params)
+      /* vk-bridge generic parameter is the request-method key, not the response type.
+         This adapter accepts runtime method names and applies the response type at its call site. */
+      const response = bridge.send(method as never, params as never) as unknown as Promise<T>;
+      response
         .then((v) => {
           clearTimeout(timer);
           resolve(v);
