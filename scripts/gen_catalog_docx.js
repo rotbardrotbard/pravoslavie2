@@ -1,4 +1,5 @@
 /* Описания приложения «Православные» для каталога мини-приложений — docx */
+/* eslint-disable @typescript-eslint/no-require-imports -- Node.js CLI script uses CommonJS imports. */
 const {
   Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
   AlignmentType, HeadingLevel, WidthType, BorderStyle, ShadingType,
