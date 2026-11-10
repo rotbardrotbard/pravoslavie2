@@ -135,7 +135,7 @@ export default function OrthodoxApp() {
       }
       setReady(true);
       /* Гео — только если пользователь разрешил ранее (кнопкой в онбординге/Ещё) */
-      const geoAllowed = lsGet<boolean>(STORAGE_KEYS.geo, true);
+      const geoAllowed = lsGet<boolean>(STORAGE_KEYS.geo, false);
       if (geoAllowed) {
         const p = await getGeoPoint();
         if (p) {
@@ -184,8 +184,8 @@ export default function OrthodoxApp() {
     setPrayerLog((log) => {
       const t = todayKey();
       const stamp = `${t}:${kind}`;
-      if (log.some((x) => x.startsWith(t))) return log;
-      const next = [...log, t];
+      if (log.includes(stamp)) return log;
+      const next = [...log, stamp];
       lsSet(STORAGE_KEYS.prayerLog, next);
       return next;
     });
