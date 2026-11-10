@@ -37,7 +37,7 @@ export default function BottomNav({
             key={t.id}
             onClick={() => onChange(t.screen)}
             aria-current={isActive ? "page" : undefined}
-            className="relative flex flex-col items-center gap-0.5 pt-2 pb-2.5 min-h-[56px] transition-colors px-0.5"
+            className="relative flex flex-col items-center justify-center gap-1 pt-2 pb-2 min-h-[64px] transition-colors px-0.5"
             style={{ color: isActive ? "var(--an-ink)" : "var(--an-ink-faint)" }}
           >
             {isActive && (
@@ -48,7 +48,7 @@ export default function BottomNav({
             )}
             {t.icon}
             <span
-              className="text-[0.58rem] leading-none whitespace-nowrap"
+              className="text-[0.7rem] leading-tight text-center whitespace-normal break-words"
               style={{ fontWeight: isActive ? 600 : 500 }}
             >
               {t.label}
