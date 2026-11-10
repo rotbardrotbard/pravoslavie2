@@ -414,7 +414,10 @@ export function getDayInfo(date: Date, today = new Date()): DayInfo {
     value.getTime() >= start.getTime() && value.getTime() <= end.getTime();
   const dateAt = (y: number, m: number, day: number) => new Date(y, m, day, 12);
 
-  const nativityFast = inRange(d, dateAt(year - (month === 0 ? 1 : 0), 10, 28), dateAt(year, 0, 6));
+  const nativityFast =
+    (month === 10 && dayOfMonth >= 28) ||
+    month === 11 ||
+    (month === 0 && dayOfMonth <= 6);
   const dormitionFast = inRange(d, dateAt(year, 7, 14), dateAt(year, 7, 27));
   const greatLentEnd = pascha ? new Date(pascha.getTime() - DAY) : null;
   const inGreatLent = !!greatLentStart && !!greatLentEnd && inRange(d, greatLentStart, greatLentEnd);
