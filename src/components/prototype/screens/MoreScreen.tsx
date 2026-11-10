@@ -231,7 +231,7 @@ export default function MoreScreen({
           <span className="flex-1 pr-serif text-[0.78rem]" style={{ color: "var(--an-ink)" }}>
             Размер шрифта
           </span>
-          <div className="flex gap-1">
+          <div className="flex max-w-[58%] flex-wrap justify-end gap-1">
             {([100, 115, 130, 150, 175, 200] as const).map((v) => (
               <button
                 key={v}
@@ -243,7 +243,7 @@ export default function MoreScreen({
                 aria-label={v === 100 ? "Обычный шрифт" : `Размер шрифта ${v}%`}
                 aria-pressed={textScale === v}
               >
-                {v === 100 ? "A" : `A+${v}`}
+                {v === 100 ? "A" : `${v}%`}
               </button>
             ))}
           </div>
