@@ -60,7 +60,10 @@ export default function WordScreen({
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [continueReading, setContinueReading] = useState<ReturnType<typeof latestReadPos>>(null);
   useEffect(() => {
+    // localStorage — внешнее хранилище; обновляем его снимок после изменения libTick.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setBookmarks(loadBookmarks());
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setContinueReading(latestReadPos());
   }, [libTick]);
 
