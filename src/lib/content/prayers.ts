@@ -55,7 +55,7 @@ export const prayersLibrary: Record<string, Prayer> = {
     id: "simvolVery",
     title: "Символ веры",
     subtitle: "Двенадцать членов веры",
-    sourceUrl: "https://azbyka.ru/molitvoslov/molitvy-utrennie.html",
+    sourceUrl: "https://azbyka.ru/molitvoslov/molitvy-utrennie-bez-tolkovanij.html",
     items: [
       {
         title: "Символ веры",
@@ -156,7 +156,7 @@ export const prayersLibrary: Record<string, Prayer> = {
   angeleBozhiy: {
     id: "angeleBozhiy",
     title: "Ангелу хранителю",
-    sourceUrl: "https://azbyka.ru/molitvoslov/molitvy-utrennie.html",
+    sourceUrl: "https://azbyka.ru/molitvoslov/molitvy-utrennie-bez-tolkovanij.html",
     items: [
       {
         title: "Ангеле Божий",
@@ -278,7 +278,7 @@ export const prayersLibrary: Record<string, Prayer> = {
     id: "vechemZlatoust",
     title: "Краткая вечерняя молитва",
     subtitle: "Молитва перед сном",
-    sourceUrl: "https://azbyka.ru/molitvoslov/tolkovyj-pravoslavnyj-molitvoslov.html",
+    sourceUrl: "https://azbyka.ru/molitvoslov/molitvy-na-son-gryadushhim-bez-tolkovanij.html",
     items: [
       {
         title: "Господи Боже наш",
@@ -311,7 +311,7 @@ export const morningRule: Prayer = {
   id: "morning",
   title: "Утреннее правило",
   subtitle: "Сокращённое домашнее правило; согласуйте его со священником",
-  sourceUrl: "https://azbyka.ru/molitvoslov/molitvy-utrennie.html",
+  sourceUrl: "https://azbyka.ru/molitvoslov/molitvy-utrennie-bez-tolkovanij.html",
   items: [
     prayersLibrary.nachalnye.items[0],
     prayersLibrary.nachalnye.items[1],
@@ -333,7 +333,7 @@ export const eveningRule: Prayer = {
   id: "evening",
   title: "Вечернее правило",
   subtitle: "Сокращённое домашнее правило; согласуйте его со священником",
-  sourceUrl: "https://azbyka.ru/molitvoslov/tolkovyj-pravoslavnyj-molitvoslov.html",
+  sourceUrl: "https://azbyka.ru/molitvoslov/molitvy-na-son-gryadushhim-bez-tolkovanij.html",
   items: [
     prayersLibrary.nachalnye.items[0],
     prayersLibrary.nachalnye.items[6],
