@@ -74,6 +74,12 @@ export default function HomeScreen({
   const [nearest, setNearest] = useState<NearestChurch | null>(null);
   useEffect(() => {
     let cancelled = false;
+    if (!geo.accurate) {
+      setNearest(null);
+      return () => {
+        cancelled = true;
+      };
+    }
     const ac = new AbortController();
     fetchNearestChurch(geo.lat, geo.lng, { signal: ac.signal })
       .then((r) => {
@@ -86,7 +92,7 @@ export default function HomeScreen({
       cancelled = true;
       ac.abort();
     };
-  }, [geo.lat, geo.lng]);
+  }, [geo.lat, geo.lng, geo.accurate]);
 
   /* Порядок карточек: сначала отмеченные в анкете интересы, затем остальные */
   let order: CardKey[] = [];
