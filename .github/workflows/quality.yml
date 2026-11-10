@@ -8,11 +8,12 @@ on:
     branches:
       - main
 
+env:
+  DATABASE_URL: "file:./prisma/ci.db"
+
 jobs:
-  lint-and-build:
+  lint:
     runs-on: ubuntu-latest
-    env:
-      DATABASE_URL: "file:./prisma/ci.db"
     steps:
       - name: Check out source
         uses: actions/checkout@v4
@@ -24,5 +25,17 @@ jobs:
         run: bun install --frozen-lockfile
       - name: Run ESLint
         run: bun run lint
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3.4"
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
       - name: Build production app
         run: bun run build
