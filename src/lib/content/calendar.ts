@@ -240,34 +240,83 @@ export function getDayInfo(date: Date, today = new Date()): DayInfo {
   const weekdayIdx = d.getDay();
 
   const year = d.getFullYear();
-  /* Пасхальный цикл: ближайшая Пасха к дате (для января–апреля — прошлогодняя) */
-  let pascha = paschaDate(year);
-  if (pascha && d.getTime() < pascha.getTime()) {
-    pascha = paschaDate(year - 1) ?? paschaDate(year + 1);
-  }
+  /* Пасха текущего года нужна для постов и переходящих праздников.
+     Для нумерации седмиц до Пасхи используем Пятидесятницу предыдущего года. */
+  const pascha = paschaDate(year);
   const pentecost = pascha ? new Date(pascha.getTime() + 49 * DAY) : null;
-  const antipascha = pascha ? new Date(pascha.getTime() + 7 * DAY) : null;
+  const previousPascha = paschaDate(year - 1);
+  const previousPentecost = previousPascha ? new Date(previousPascha.getTime() + 49 * DAY) : null;
+  const liturgicalPentecost =
+    pascha && d.getTime() < pascha.getTime() ? previousPentecost : pentecost;
+  const liturgicalPascha =
+    pascha && d.getTime() < pascha.getTime() ? previousPascha : pascha;
+  const liturgicalAntipascha = liturgicalPascha
+    ? new Date(liturgicalPascha.getTime() + 7 * DAY)
+    : null;
 
-  /* Недели и гласы */
+  /* Недели и гласы по пасхальному кругу. */
   let weekLabel = "";
   let glas = "";
-  if (pascha && pentecost && antipascha) {
-    if (d.getTime() >= pentecost.getTime()) {
-      if (weekdayIdx === 0) {
-        const n = Math.round((d.getTime() - pentecost.getTime()) / (7 * DAY));
-        weekLabel = n > 0 ? `Неделя ${ordinal(n)}-я по Пятидесятнице` : "";
-      } else {
-        const dukhovDen = pentecost.getTime() + DAY;
-        const n = Math.floor((d.getTime() - dukhovDen) / (7 * DAY)) + 1;
-        weekLabel = n > 0 ? `Седмица ${ordinal(n)}-я по Пятидесятнице` : "";
-      }
-      const lastSun = lastSundayOnOrBefore(d);
-      const weeks = Math.round((lastSun.getTime() - antipascha.getTime()) / (7 * DAY));
-      if (weeks >= 0) glas = `Глас ${ordinal((weeks % 8) + 1)}-й`;
-    } else if (d.getTime() >= pascha.getTime()) {
-      /* Светлая седмица и период до Пятидесятницы */
-      weekLabel = "От Пасхи до Пятидесятницы";
+  const greatLentStart = pascha ? new Date(pascha.getTime() - 48 * DAY) : null;
+  const publicanSunday = pascha ? new Date(pascha.getTime() - 70 * DAY) : null;
+
+  if (pascha && pentecost && d.getTime() >= pascha.getTime() && d.getTime() <= pentecost.getTime()) {
+    if (sameDay(d, pascha)) {
+      weekLabel = "Светлое Христово Воскресение";
+    } else if (d.getTime() < pascha.getTime() + 7 * DAY) {
+      weekLabel = "Светлая седмица";
+    } else {
+      const weekNo = Math.floor((d.getTime() - pascha.getTime()) / (7 * DAY)) + 1;
+      weekLabel = weekdayIdx === 0
+        ? `Неделя ${ordinal(weekNo)}-я по Пасхе`
+        : `Седмица ${ordinal(weekNo)}-я по Пасхе`;
     }
+  } else if (pascha && pentecost && d.getTime() > pentecost.getTime()) {
+    if (sameDay(d, pentecost)) {
+      weekLabel = "День Святой Троицы (Пятидесятница)";
+    } else if (weekdayIdx === 0) {
+      const n = Math.round((lastSundayOnOrBefore(d).getTime() - pentecost.getTime()) / (7 * DAY));
+      weekLabel = `Неделя ${ordinal(n)}-я по Пятидесятнице`;
+    } else {
+      const n = Math.floor((d.getTime() - (pentecost.getTime() + DAY)) / (7 * DAY)) + 1;
+      weekLabel = `Седмица ${ordinal(n)}-я по Пятидесятнице`;
+    }
+  } else if (pascha && publicanSunday && d.getTime() >= publicanSunday.getTime()) {
+    const daysFromPublican = Math.floor((d.getTime() - publicanSunday.getTime()) / DAY);
+    if (daysFromPublican < 7) {
+      weekLabel = weekdayIdx === 0 ? "Неделя о мытаре и фарисее" : "Седмица о мытаре и фарисее";
+    } else if (daysFromPublican < 14) {
+      weekLabel = weekdayIdx === 0 ? "Неделя о блудном сыне" : "Седмица о блудном сыне";
+    } else if (daysFromPublican === 14) {
+      weekLabel = "Неделя мясопустная (о Страшном суде)";
+    } else if (daysFromPublican < 21) {
+      weekLabel = "Сырная седмица";
+    } else if (daysFromPublican === 21) {
+      weekLabel = "Неделя сыропустная (Прощёное воскресенье)";
+    } else if (greatLentStart && d.getTime() < pascha.getTime() - 7 * DAY) {
+      const n = Math.floor((d.getTime() - greatLentStart.getTime()) / (7 * DAY)) + 1;
+      weekLabel = weekdayIdx === 0
+        ? `Неделя ${ordinal(n)}-я Великого поста`
+        : `Седмица ${ordinal(n)}-я Великого поста`;
+    } else if (d.getTime() === pascha.getTime() - 7 * DAY) {
+      weekLabel = "Неделя ваий (Вербное воскресенье)";
+    } else if (d.getTime() < pascha.getTime()) {
+      weekLabel = "Страстная седмица";
+    }
+  } else if (liturgicalPentecost && d.getTime() >= liturgicalPentecost.getTime()) {
+    if (weekdayIdx === 0) {
+      const n = Math.round((lastSundayOnOrBefore(d).getTime() - liturgicalPentecost.getTime()) / (7 * DAY));
+      weekLabel = `Неделя ${ordinal(n)}-я по Пятидесятнице`;
+    } else {
+      const n = Math.floor((d.getTime() - (liturgicalPentecost.getTime() + DAY)) / (7 * DAY)) + 1;
+      weekLabel = `Седмица ${ordinal(n)}-я по Пятидесятнице`;
+    }
+  }
+
+  if (liturgicalAntipascha && d.getTime() >= liturgicalAntipascha.getTime()) {
+    const lastSun = lastSundayOnOrBefore(d);
+    const weeks = Math.round((lastSun.getTime() - liturgicalAntipascha.getTime()) / (7 * DAY));
+    if (weeks >= 0) glas = `Глас ${ordinal((weeks % 8) + 1)}-й`;
   }
 
   /* Святые дня — полный месяцеслов (menology/): у каждого описание */
