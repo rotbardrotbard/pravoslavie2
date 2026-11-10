@@ -127,6 +127,7 @@ export const prayersLibrary: Record<string, Prayer> = {
     id: "optinskaya",
     title: "Молитва Оптинских старцев",
     subtitle: "На начало дня",
+    sourceUrl: "https://azbyka.ru/molitvoslov/molitva-optinskix-startsev.html",
     items: [
       {
         title: "Молитва Оптинских старцев",
@@ -279,12 +280,12 @@ export const prayersLibrary: Record<string, Prayer> = {
     sourceUrl: "https://azbyka.ru/molitvoslov/tolkovyj-pravoslavnyj-molitvoslov.html",
     items: [
       {
-        title: "Двенадцать прошений",
+        title: "Господи Боже наш",
         body:
           "Господи Боже наш, еже согреших во дни сем словом, делом и помышлением, яко Благ и Человеколюбец прости ми. Мирен сон и безмятежен даруй ми. Ангела Твоего хранителя посли, покрывающа и соблюдающа мя от всякаго зла; яко Ты еси хранитель душам и телесем нашим, и Тебе славу возсылаем, Отцу и Сыну и Святому Духу, ныне и присно и во веки веков. Аминь.",
       },
       {
-        title: "Заключение",
+        title: "Заключительная молитва",
         body:
           "Господи Иисусе Христе, Сыне Божий, молитв ради Пречистыя Твоей Матери, преподобных и богоносных отец наших и всех святых, помилуй и спаси мя, грешнаго, яко Благ и Человеколюбец. Аминь.",
       },
@@ -308,10 +309,12 @@ export const prayersLibrary: Record<string, Prayer> = {
 export const morningRule: Prayer = {
   id: "morning",
   title: "Утреннее правило",
-  subtitle: "Краткое домашнее правило",
+  subtitle: "Сокращённое домашнее правило",
   sourceUrl: "https://azbyka.ru/molitvoslov/molitvy-utrennie.html",
   items: [
     prayersLibrary.nachalnye.items[0],
+    prayersLibrary.nachalnye.items[1],
+    prayersLibrary.nachalnye.items[5],
     prayersLibrary.nachalnye.items[6],
     prayersLibrary.tsaryuNebesny.items[0],
     prayersLibrary.trisvyatoe.items[0],
@@ -329,7 +332,7 @@ export const morningRule: Prayer = {
 export const eveningRule: Prayer = {
   id: "evening",
   title: "Вечернее правило",
-  subtitle: "Краткое домашнее правило перед сном",
+  subtitle: "Сокращённое домашнее правило перед сном",
   sourceUrl: "https://azbyka.ru/molitvoslov/tolkovyj-pravoslavnyj-molitvoslov.html",
   items: [
     prayersLibrary.nachalnye.items[0],
