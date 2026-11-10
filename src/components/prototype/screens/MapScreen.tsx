@@ -62,7 +62,7 @@ export default function MapScreen({
         minZoom: 8, // глубже — карта Патриархии показывает только епархии
         maxZoom: 19,
         zoomControl: false,
-        attributionControl: false,
+        attributionControl: true,
         scrollWheelZoom: false, // чтобы страница не скроллилась при прокрутке карты
       });
       L.control.zoom({ position: "bottomright" }).addTo(map);
