@@ -55,21 +55,28 @@ export default function TempleSheet({
   const km = haversineKm(geo.lat, geo.lng, spot.lat, spot.lng);
   const isLive = spot.source === "patriarchia";
 
-  const [info, setInfo] = useState<PChurchInfo | null>(null);
-  const [infoErr, setInfoErr] = useState(false);
+  const [infoState, setInfoState] = useState<{
+    infoId: string;
+    info: PChurchInfo | null;
+    error: boolean;
+  } | null>(null);
+  const currentInfoState =
+    isLive && spot.infoId && infoState?.infoId === spot.infoId ? infoState : null;
+  const info = currentInfoState?.info ?? null;
+  const infoErr = currentInfoState?.error ?? false;
 
-  /* Лениво подтягиваем карточку прихода из базы Патриархии */
+  /* Лениво подтягиваем карточку прихода из базы Патриархии.
+     Данные помечены infoId: старый ответ не попадёт в карточку другого храма. */
   useEffect(() => {
     if (!isLive || !spot.infoId) return;
     let cancelled = false;
-    setInfo(null);
-    setInfoErr(false);
-    fetchChurchInfo(spot.infoId)
+    const infoId = spot.infoId;
+    fetchChurchInfo(infoId)
       .then((i) => {
-        if (!cancelled) setInfo(i);
+        if (!cancelled) setInfoState({ infoId, info: i, error: false });
       })
       .catch(() => {
-        if (!cancelled) setInfoErr(true);
+        if (!cancelled) setInfoState({ infoId, info: null, error: true });
       });
     return () => {
       cancelled = true;
@@ -150,7 +157,7 @@ export default function TempleSheet({
           )}
 
           {/* Живой объект: данные прихода из базы map.patriarchia.ru */}
-          {isLive && !info && !infoErr && (
+          {isLive && spot.infoId && !info && !infoErr && (
             <div className="orn-card-soft px-3 py-2.5 mb-3 pr-serif text-[0.72rem]" style={{ color: "var(--an-ink-soft)" }}>
               Загружаем сведения о приходе…
             </div>
