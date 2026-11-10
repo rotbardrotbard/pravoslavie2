@@ -51,12 +51,12 @@ export default function MoreScreen({
   const [notifSwitch, setNotifSwitch] = useState(false);
 
   /* Святой покровитель и именины по данным крещения из анкеты */
-  const patron = (() => {
+  const baptismMemories = (() => {
     if (!profile?.baptismDate) return null;
     const d = new Date(profile.baptismDate + "T12:00:00");
     if (isNaN(d.getTime())) return null;
     const s = saintsForDate(d);
-    return s.saints[0] ?? null;
+    return s.saints.length ? s.saints.slice(0, 3).join(" · ") : null;
   })();
   const nameDays = profile?.baptismName ? nameDaysForName(profile.baptismName) : [];
 
@@ -132,14 +132,14 @@ export default function MoreScreen({
               </b>
             </div>
           )}
-          {patron && (
+          {baptismMemories && (
             <div className="pr-serif text-[0.72rem]" style={{ color: "var(--an-ink-soft)" }}>
-              Святой покровитель по святцам: {patron}
+              Святые, память которых совершается в день крещения: {baptismMemories}
             </div>
           )}
           {nameDays.length > 0 && (
             <div className="pr-serif text-[0.72rem] mt-0.5" style={{ color: "var(--an-ink-soft)" }}>
-              Именины: {nameDays.map((n) => formatSaintsDate(n.dateKey)).join(", ")}
+              Дни памяти святых с этим именем: {nameDays.slice(0, 8).map((n) => formatSaintsDate(n.dateKey)).join(", ")}{nameDays.length > 8 ? ` и ещё ${nameDays.length - 8}` : ""}
             </div>
           )}
         </div>
