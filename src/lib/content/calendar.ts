@@ -42,19 +42,25 @@ const MONTHS_NOM = ["января", "февраля", "марта", "апрел�
 
 const DAY = 86_400_000;
 
-/* Пасха (новый стиль, РПЦ) — база для переходящих дат */
-const PASCHA: Record<number, string> = {
-  2024: "2024-05-05",
-  2025: "2025-04-20",
-  2026: "2026-04-12",
-  2027: "2027-05-02",
-  2028: "2028-04-16",
-};
+/* Православная Пасхалия: вычисление Пасхи по юлианскому календарю
+   с переводом в григорианский. Поддерживается диапазон 1900–2199 гг. */
+export function orthodoxPaschaDate(year: number): Date | null {
+  if (!Number.isInteger(year) || year < 1900 || year > 2199) return null;
+
+  const a = year % 4;
+  const b = year % 7;
+  const c = year % 19;
+  const d = (19 * c + 15) % 30;
+  const e = (2 * a + 4 * b - d + 34) % 7;
+  const julianMonth = Math.floor((d + e + 114) / 31);
+  const julianDay = ((d + e + 114) % 31) + 1;
+  const gregorianOffset = Math.floor(year / 100) - Math.floor(year / 400) - 2;
+
+  return new Date(year, julianMonth - 1, julianDay + gregorianOffset, 12);
+}
 
 function paschaDate(year: number): Date | null {
-  const key = PASCHA[year];
-  if (!key) return null;
-  return new Date(key + "T12:00:00");
+  return orthodoxPaschaDate(year);
 }
 
 /* ── Непереходящие праздники и памяти (новый стиль) ── */
@@ -271,37 +277,92 @@ export function getDayInfo(date: Date, today = new Date()): DayInfo {
   const notices: string[] = [];
   if (!saints.length) notices.push("Богослужение по уставу дня");
 
-  /* Праздник дня: фиксированный (для точечных отметок) либо главный из месяцеслова */
+  /* Переходящие праздники: Пасха, Вербное воскресенье,
+     Вознесение Господне и Пятидесятница. */
+  const movableFeast: FeastEntry | null = pascha
+    ? sameDay(d, pascha)
+      ? { label: "Светлое Христово Воскресение (Пасха)", kind: "great" }
+      : sameDay(d, new Date(pascha.getTime() - 7 * DAY))
+        ? { label: "Вход Господень в Иерусалим (Вербное воскресенье)", kind: "great" }
+        : sameDay(d, new Date(pascha.getTime() + 39 * DAY))
+          ? { label: "Вознесение Господне", kind: "great" }
+          : sameDay(d, new Date(pascha.getTime() + 49 * DAY))
+            ? { label: "День Святой Троицы (Пятидесятница)", kind: "great" }
+            : null
+    : null;
+
+  /* Праздник дня: сначала переходящий, затем неподвижный и месяцеслов. */
   const fixed = FIXED_FEASTS[key] ?? null;
   const feast =
+    movableFeast ??
     fixed ??
     (() => {
       const r = saintRecs.find((x) => x.kind === "great" || x.kind === "feast" || x.kind === "icon");
       return r ? { label: r.name, kind: r.kind } : null;
     })();
 
-  /* Пост */
+  /* Постные периоды. Приложение показывает период, но не назначает
+     меру воздержания: уставные послабления зависят от дня, праздника,
+     здоровья и благословения духовника. */
   const isWedFri = weekdayIdx === 3 || weekdayIdx === 5;
+  const month = d.getMonth();
+  const dayOfMonth = d.getDate();
+  const inRange = (value: Date, start: Date, end: Date) =>
+    value.getTime() >= start.getTime() && value.getTime() <= end.getTime();
+  const dateAt = (y: number, m: number, day: number) => new Date(y, m, day, 12);
+
+  const nativityFast = inRange(d, dateAt(year - (month === 0 ? 1 : 0), 10, 28), dateAt(year, 0, 6));
+  const dormitionFast = inRange(d, dateAt(year, 7, 14), dateAt(year, 7, 27));
+  const greatLentStart = pascha ? new Date(pascha.getTime() - 48 * DAY) : null;
+  const greatLentEnd = pascha ? new Date(pascha.getTime() - DAY) : null;
+  const inGreatLent = !!greatLentStart && !!greatLentEnd && inRange(d, greatLentStart, greatLentEnd);
+  const pentecostDate = pascha ? new Date(pascha.getTime() + 49 * DAY) : null;
+  const apostlesStart = pentecostDate ? new Date(pentecostDate.getTime() + 8 * DAY) : null;
+  const apostlesEnd = dateAt(year, 6, 11);
+  const inApostlesFast =
+    !!pascha &&
+    pascha.getFullYear() === year &&
+    !!apostlesStart &&
+    apostlesStart.getTime() <= apostlesEnd.getTime() &&
+    inRange(d, apostlesStart, apostlesEnd);
+
+  /* Сплошные седмицы, когда обычный пост среды и пятницы отменяется. */
+  const publicanSunday = pascha ? new Date(pascha.getTime() - 70 * DAY) : null;
+  const publicanWeek = !!publicanSunday &&
+    inRange(d, new Date(publicanSunday.getTime() + DAY), new Date(publicanSunday.getTime() + 7 * DAY));
+  const brightWeek = !!pascha && inRange(d, pascha, new Date(pascha.getTime() + 6 * DAY));
+  const trinityWeek = !!pentecostDate &&
+    inRange(d, new Date(pentecostDate.getTime() + DAY), new Date(pentecostDate.getTime() + 7 * DAY));
+  const christmasWeek = inRange(d, dateAt(year, 0, 7), dateAt(year, 0, 17));
+  const cheeseWeek = !!greatLentStart &&
+    inRange(d, new Date(greatLentStart.getTime() - 7 * DAY), new Date(greatLentStart.getTime() - DAY));
+  const fastFreeWeek = publicanWeek || brightWeek || trinityWeek || christmasWeek;
+
   let fastLabel: string;
   let meal: string;
-  const month = d.getMonth(); // 0-based: 10 = ноябрь
-  const dayOfMonth = d.getDate();
-  const nativityFast =
-    (month === 10 && dayOfMonth >= 28) ||
-    month === 11 ||
-    (month === 0 && dayOfMonth <= 6);
-
-  if (nativityFast) {
+  if (inGreatLent) {
+    fastLabel = "Великий пост";
+    meal = "Мера поста и устав трапезы зависят от дня и личных обстоятельств";
+  } else if (inApostlesFast) {
+    fastLabel = "Петров (Апостольский) пост";
+    meal = "Мера поста зависит от дня и церковного устава";
+  } else if (dormitionFast) {
+    fastLabel = "Успенский пост";
+    meal = "Мера поста зависит от дня и церковного устава";
+  } else if (nativityFast) {
     fastLabel = "Рождественский пост";
-    meal = isWedFri
-      ? "Среда/пятница: без мяса и молочного, рыба — по благословению"
-      : "Без мяса и молочного; рыба — в выходные дни";
-  } else if (isWedFri) {
+    meal = "Мера поста зависит от дня и церковного устава";
+  } else if (cheeseWeek) {
+    fastLabel = "Сырная седмица (без мяса)";
+    meal = "Особенности трапезы уточняйте по церковному календарю";
+  } else if (isWedFri && !fastFreeWeek) {
     fastLabel = "Постный день (среда/пятница)";
-    meal = "Без мяса и молочного; рыба — по уставу дня";
+    meal = "Мера поста зависит от дня и церковного устава";
   } else {
-    fastLabel = "Поста нет";
-    meal = "Трапеза без ограничений";
+    fastLabel = fastFreeWeek ? "Сплошная седмица" : "Поста нет";
+    meal = fastFreeWeek
+      ? "В эту седмицу обычный пост в среду и пятницу отменяется"
+      : "Поста нет";
   }
 
   /* Родительские субботы */
