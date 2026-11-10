@@ -50,7 +50,7 @@ export default function MoreScreen({
   const [about, setAbout] = useState(false);
   const [notifSwitch, setNotifSwitch] = useState(false);
 
-  /* Святой покровитель и именины по данным крещения из анкеты */
+  /* Памяти святых на дату крещения и святые с тем же именем */
   const baptismMemories = (() => {
     if (!profile?.baptismDate) return null;
     const d = new Date(profile.baptismDate + "T12:00:00");
@@ -140,6 +140,11 @@ export default function MoreScreen({
           {nameDays.length > 0 && (
             <div className="pr-serif text-[0.72rem] mt-0.5" style={{ color: "var(--an-ink-soft)" }}>
               Дни памяти святых с этим именем: {nameDays.slice(0, 8).map((n) => formatSaintsDate(n.dateKey)).join(", ")}{nameDays.length > 8 ? ` и ещё ${nameDays.length - 8}` : ""}
+            </div>
+          )}
+          {(baptismMemories || nameDays.length > 0) && (
+            <div className="pr-serif text-[0.66rem] mt-1" style={{ color: "var(--an-ink-soft)" }}>
+              Это справочные даты памяти; небесного покровителя лучше определить со священником.
             </div>
           )}
         </div>
