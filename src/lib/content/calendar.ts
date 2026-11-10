@@ -225,7 +225,11 @@ function fmtDate(d: Date): string {
 }
 
 function oldStyle(d: Date): Date {
-  return new Date(d.getTime() - 13 * DAY);
+  /* Разница стилей меняется после февраля 2100 года:
+     13 дней в XX–XXI веках до 1 марта 2100, затем 14 дней. */
+  const referenceYear = d.getMonth() < 2 ? d.getFullYear() - 1 : d.getFullYear();
+  const offset = Math.floor(referenceYear / 100) - Math.floor(referenceYear / 400) - 2;
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate() - offset, 12);
 }
 
 function fmtOld(d: Date): string {
@@ -269,6 +273,8 @@ export function getDayInfo(date: Date, today = new Date()): DayInfo {
   if (pascha && pentecost && d.getTime() >= pascha.getTime() && d.getTime() <= pentecost.getTime()) {
     if (sameDay(d, pascha)) {
       weekLabel = "Светлое Христово Воскресение";
+    } else if (sameDay(d, pentecost)) {
+      weekLabel = "День Святой Троицы (Пятидесятница)";
     } else if (d.getTime() < pascha.getTime() + 7 * DAY) {
       weekLabel = "Светлая седмица";
     } else {
@@ -504,4 +510,10 @@ export function monthTitle(year: number, month: number): string {
 /* Ключ дня для идентификации в сетке (свои дни соседних месяцев серые) */
 export function dayKey(d: Date): string {
   return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+}
+
+/* Ссылка на ежедневную страницу источника для проверки конкретной даты. */
+export function azbykaDayUrl(d: Date): string {
+  const date = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  return `https://azbyka.ru/days/${date}`;
 }
