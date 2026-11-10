@@ -4,8 +4,8 @@ import { useState } from "react";
 import { Bell, ChevronLeft, Flame, HeartHandshake } from "lucide-react";
 import type { Level } from "@/lib/app-data";
 import {
-  eveningRule,
-  morningRule,
+  eveningRuleForDate,
+  morningRuleForDate,
   prayerNeeds,
   type Prayer,
 } from "@/lib/content/prayers";
@@ -27,6 +27,9 @@ export default function PrayerScreen({
   const [reading, setReading] = useState<{ rule: Prayer; kind: "morning" | "evening" } | null>(null);
   const [need, setNeed] = useState<Prayer | null>(null);
   const [idx, setIdx] = useState(0);
+  const today = new Date();
+  const morningRule = morningRuleForDate(today);
+  const eveningRule = eveningRuleForDate(today);
 
   /* ── Чтение правила ── */
   if (reading) {
@@ -85,6 +88,18 @@ export default function PrayerScreen({
             </div>
           ) : null}
         </div>
+
+        {reading.rule.sourceUrl && (
+          <a
+            href={reading.rule.sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block text-center pr-serif text-[0.7rem] underline underline-offset-2 mb-3"
+            style={{ color: "var(--an-ink-soft)" }}
+          >
+            Источник сверки: «Азбука веры»
+          </a>
+        )}
 
         <div className="flex gap-2">
           {idx < reading.rule.items.length - 1 && (
@@ -150,6 +165,17 @@ export default function PrayerScreen({
             </div>
           ))}
         </div>
+        {need.sourceUrl && (
+          <a
+            href={need.sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block text-center pr-serif text-[0.7rem] underline underline-offset-2 mt-3"
+            style={{ color: "var(--an-ink-soft)" }}
+          >
+            Источник сверки: «Азбука веры»
+          </a>
+        )}
       </div>
     );
   }
@@ -244,7 +270,7 @@ export default function PrayerScreen({
               </span>
             </div>
             <div className="pr-serif text-[0.7rem]" style={{ color: "var(--an-ink-soft)" }}>
-              {eveningRule.subtitle}: молитва Златоуста, ангелу хранителю, молитва перед сном
+              {eveningRule.subtitle}: краткая вечерняя молитва, молитва Ангелу хранителю и молитва перед сном
             </div>
           </button>
 
