@@ -72,14 +72,20 @@ interface FeastEntry {
 const FIXED_FEASTS: Record<string, FeastEntry> = {
   "01-06": { label: "Навечерие Рождества Христова (сочельник)", kind: "feast" },
   "01-07": { label: "Рождество Христово", kind: "great" },
+  "01-18": { label: "Навечерие Богоявления (Крещенский сочельник)", kind: "feast" },
   "01-14": { label: "Обрезание Господне; свт. Василия Великого", kind: "feast" },
   "01-19": { label: "Крещение Господне (Богоявление)", kind: "great" },
   "02-15": { label: "Сретение Господне", kind: "great" },
   "04-07": { label: "Благовещение Пресвятой Богородицы", kind: "great" },
+  "07-07": { label: "Рождество Иоанна Предтечи", kind: "great" },
+  "07-12": { label: "Первоверховных апостолов Петра и Павла", kind: "great" },
+  "08-19": { label: "Преображение Господне", kind: "great" },
   "08-28": { label: "Успение Пресвятой Богородицы", kind: "great" },
+  "09-11": { label: "Усекновение главы Иоанна Предтечи", kind: "feast" },
   "09-21": { label: "Рождество Пресвятой Богородицы", kind: "great" },
   "09-27": { label: "Воздвижение Креста Господня", kind: "great" },
   "10-14": { label: "Покров Пресвятой Богородицы", kind: "great" },
+  "10-30": { label: "Поминовение православных христиан, пострадавших в годы гонений", kind: "feast" },
   "11-04": { label: "Иконы Божией Матери «Казанская»", kind: "icon" },
   "11-06": { label: "Иконы Божией Матери «Всех скорбящих Радость»", kind: "icon" },
   "11-08": { label: "Вмч. Димитрия Солунского", kind: "saint" },
@@ -361,12 +367,12 @@ export function getDayInfo(date: Date, today = new Date()): DayInfo {
 
   const nativityFast = inRange(d, dateAt(year - (month === 0 ? 1 : 0), 10, 28), dateAt(year, 0, 6));
   const dormitionFast = inRange(d, dateAt(year, 7, 14), dateAt(year, 7, 27));
-  const greatLentStart = pascha ? new Date(pascha.getTime() - 48 * DAY) : null;
   const greatLentEnd = pascha ? new Date(pascha.getTime() - DAY) : null;
   const inGreatLent = !!greatLentStart && !!greatLentEnd && inRange(d, greatLentStart, greatLentEnd);
   const pentecostDate = pascha ? new Date(pascha.getTime() + 49 * DAY) : null;
   const apostlesStart = pentecostDate ? new Date(pentecostDate.getTime() + 8 * DAY) : null;
-  const apostlesEnd = dateAt(year, 5, 28);
+  /* В РПЦ Петров пост заканчивается 11 июля, накануне памяти Петра и Павла (12 июля). */
+  const apostlesEnd = dateAt(year, 6, 11);
   const inApostlesFast =
     !!pascha &&
     pascha.getFullYear() === year &&
@@ -375,16 +381,18 @@ export function getDayInfo(date: Date, today = new Date()): DayInfo {
     inRange(d, apostlesStart, apostlesEnd);
 
   /* Сплошные седмицы, когда обычный пост среды и пятницы отменяется. */
-  const publicanSunday = pascha ? new Date(pascha.getTime() - 70 * DAY) : null;
   const publicanWeek = !!publicanSunday &&
-    inRange(d, new Date(publicanSunday.getTime() + DAY), new Date(publicanSunday.getTime() + 7 * DAY));
+    inRange(d, new Date(publicanSunday.getTime() + DAY), new Date(publicanSunday.getTime() + 6 * DAY));
   const brightWeek = !!pascha && inRange(d, pascha, new Date(pascha.getTime() + 6 * DAY));
   const trinityWeek = !!pentecostDate &&
-    inRange(d, new Date(pentecostDate.getTime() + DAY), new Date(pentecostDate.getTime() + 7 * DAY));
+    inRange(d, new Date(pentecostDate.getTime() + DAY), new Date(pentecostDate.getTime() + 6 * DAY));
   const christmasWeek = inRange(d, dateAt(year, 0, 7), dateAt(year, 0, 17));
   const cheeseWeek = !!greatLentStart &&
     inRange(d, new Date(greatLentStart.getTime() - 7 * DAY), new Date(greatLentStart.getTime() - DAY));
   const fastFreeWeek = publicanWeek || brightWeek || trinityWeek || christmasWeek;
+  const oneDayFast = (month === 0 && dayOfMonth === 18) ||
+    (month === 8 && dayOfMonth === 11) ||
+    (month === 8 && dayOfMonth === 27);
 
   let fastLabel: string;
   let meal: string;
@@ -400,6 +408,9 @@ export function getDayInfo(date: Date, today = new Date()): DayInfo {
   } else if (nativityFast) {
     fastLabel = "Рождественский пост";
     meal = "Мера поста зависит от дня и церковного устава";
+  } else if (oneDayFast) {
+    fastLabel = "Однодневный строгий пост";
+    meal = "Постный день; меру воздержания сообразуют с церковным уставом и личными обстоятельствами";
   } else if (cheeseWeek) {
     fastLabel = "Сырная седмица (без мяса)";
     meal = "Особенности трапезы уточняйте по церковному календарю";
@@ -413,18 +424,39 @@ export function getDayInfo(date: Date, today = new Date()): DayInfo {
       : "Поста нет";
   }
 
-  /* Родительские субботы */
+  /* Родительские субботы и другие дни особого поминовения. */
   let parentSaturday = false;
-  if (pascha && pentecost) {
+  if (pascha && pentecost && greatLentStart) {
     let dimitrievskaya = new Date(year, 10, 8, 12);
     while (dimitrievskaya.getDay() !== 6) dimitrievskaya = new Date(dimitrievskaya.getTime() - DAY);
     const troitskaya = new Date(pentecost.getTime() - DAY);
     const myasopustnaya = new Date(pascha.getTime() - 57 * DAY);
+    const lentSaturdays = [12, 19, 26].map((offset) => new Date(greatLentStart.getTime() + offset * DAY));
     parentSaturday =
-      sameDay(d, dimitrievskaya) || sameDay(d, troitskaya) || sameDay(d, myasopustnaya);
+      sameDay(d, dimitrievskaya) ||
+      sameDay(d, troitskaya) ||
+      sameDay(d, myasopustnaya) ||
+      lentSaturdays.some((date) => sameDay(d, date));
+
     if (sameDay(d, dimitrievskaya)) notices.unshift("Димитриевская родительская суббота — поминовение усопших");
-    if (sameDay(d, troitskaya)) notices.unshift("Троицкая родительская суббота — поминовение усопших");
+    if (sameDay(d, troitskaya)) notices.unshift("Троицкая вселенская родительская суббота — поминовение усопших");
     if (sameDay(d, myasopustnaya)) notices.unshift("Вселенская мясопустная родительская суббота");
+    if (sameDay(d, lentSaturdays[0])) notices.unshift("Вторая родительская суббота Великого поста");
+    if (sameDay(d, lentSaturdays[1])) notices.unshift("Третья родительская суббота Великого поста");
+    if (sameDay(d, lentSaturdays[2])) notices.unshift("Четвертая родительская суббота Великого поста");
+
+    const radonitsa = new Date(pascha.getTime() + 9 * DAY);
+    if (sameDay(d, radonitsa)) notices.unshift("Радоница — поминовение усопших");
+  }
+
+  if (month === 1 && dayOfMonth === 8) {
+    notices.unshift("Поминовение пострадавших в годину гонений за веру Христову");
+  }
+  if (month === 4 && dayOfMonth === 9) {
+    notices.unshift("Поминовение усопших воинов");
+  }
+  if (month === 9 && dayOfMonth === 30) {
+    notices.unshift("Поминовение православных христиан, пострадавших в годы гонений");
   }
 
   const isToday = sameDay(d, today);
