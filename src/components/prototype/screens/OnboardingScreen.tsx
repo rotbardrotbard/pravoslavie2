@@ -17,7 +17,7 @@ import {
   Check,
 } from "lucide-react";
 import type { BaptismProfile, Interest, Level } from "@/lib/app-data";
-import { formatSaintsDate, nameDaysForName, saintsForDate } from "@/lib/content/calendar";
+import { azbykaDayUrl, formatSaintsDate, nameDaysForName, saintsForDate } from "@/lib/content/calendar";
 import { OrthodoxCross, PhotoBanner } from "../bits";
 
 const levels: { id: Level; label: string; hint: string; icon: React.ReactNode }[] = [
@@ -50,7 +50,7 @@ export default function OnboardingScreen({
   const [baptName, setBaptName] = useState("");
   const [baptDate, setBaptDate] = useState("");
 
-  /* Святцы: покровитель по дате крещения + именины по имени */
+  /* Справочные памяти святых по дате крещения и крещальному имени */
   const saintsOfDate = useMemo(() => {
     if (!baptDate) return null;
     const d = new Date(baptDate + "T12:00:00");
@@ -288,32 +288,41 @@ export default function OnboardingScreen({
               <Cross size={15} className="mt-0.5 shrink-0" style={{ color: "var(--an-accent)" }} />
               <div className="min-w-0">
                 {baptDate && saintsOfDate ? (
-                  saintsOfDate.saints.length > 0 ? (
-                    <>
-                      <div className="pr-serif text-[0.72rem] font-bold" style={{ color: "var(--an-ink)" }}>
-                        По святцам на {formatSaintsDate(baptDate.slice(5))}
-                      </div>
-                      {saintsOfDate.saints.slice(0, 3).map((s, i) => (
+                  <>
+                    <div className="pr-serif text-[0.72rem] font-bold" style={{ color: "var(--an-ink)" }}>
+                      Память святых на {formatSaintsDate(baptDate.slice(5))}
+                    </div>
+                    {saintsOfDate.saints.length > 0 ? (
+                      saintsOfDate.saints.slice(0, 3).map((s, i) => (
                         <div key={i} className="pr-serif text-[0.68rem] leading-snug" style={{ color: "var(--an-ink-soft)" }}>
                           • {s}
                         </div>
-                      ))}
-                      {nameDays.length > 0 && (
-                        <div className="pr-serif text-[0.68rem] leading-snug mt-1.5" style={{ color: "var(--an-ink)" }}>
-                          Именины «{baptName.trim()}»:{" "}
-                          {nameDays.map((n) => `${formatSaintsDate(n.dateKey)} — ${n.saint}`).join("; ")}
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <div className="pr-serif text-[0.68rem]" style={{ color: "var(--an-ink-soft)" }}>
-                      В этот день нет крупного праздника — святого покровителя уточним по полному
-                      месяцеслову при синхронизации календаря
-                    </div>
-                  )
+                      ))
+                    ) : (
+                      <div className="pr-serif text-[0.68rem]" style={{ color: "var(--an-ink-soft)" }}>
+                        В локальном месяцеслове нет записи о памяти святого на эту дату.
+                      </div>
+                    )}
+                    {nameDays.length > 0 && (
+                      <div className="pr-serif text-[0.68rem] leading-snug mt-1.5" style={{ color: "var(--an-ink)" }}>
+                        Дни памяти святых с именем «{baptName.trim()}»:{" "}
+                        {nameDays.slice(0, 4).map((n) => `${formatSaintsDate(n.dateKey)} — ${n.saint}`).join("; ")}
+                        {nameDays.length > 4 ? `; и ещё ${nameDays.length - 4}` : ""}
+                      </div>
+                    )}
+                    <a
+                      href={azbykaDayUrl(new Date(`${baptDate}T12:00:00`))}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block pr-serif text-[0.68rem] underline underline-offset-2 mt-1.5"
+                      style={{ color: "var(--an-ink-soft)" }}
+                    >
+                      Проверить дату на «Азбуке веры»
+                    </a>
+                  </>
                 ) : (
                   <div className="pr-serif text-[0.68rem]" style={{ color: "var(--an-ink-soft)" }}>
-                    Укажите дату крещения — покажем святых, память которых совершается в этот день
+                    Укажите дату крещения — покажем памятные даты и дадим ссылку на церковный календарь
                   </div>
                 )}
               </div>
