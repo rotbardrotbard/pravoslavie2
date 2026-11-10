@@ -40,7 +40,7 @@ export const prayersLibrary: Record<string, Prayer> = {
     id: "psalom50",
     title: "Псалом 50",
     subtitle: "Покаянный псалом царя Давида",
-    sourceUrl: "https://azbyka.ru/molitvoslov/molitvy-utrennie.html",
+    sourceUrl: "https://azbyka.ru/molitvoslov/molitvy-utrennie-bez-tolkovanij.html",
     items: [
       {
         title: "Помилуй мя, Боже",
@@ -168,7 +168,7 @@ export const prayersLibrary: Record<string, Prayer> = {
   angeleVecher: {
     id: "angeleVecher",
     title: "Ангелу хранителю перед сном",
-    sourceUrl: "https://azbyka.ru/molitvoslov/tolkovyj-pravoslavnyj-molitvoslov.html",
+    sourceUrl: "https://azbyka.ru/molitvoslov/molitva-angelu-xranitelyu.html",
     items: [
       {
         title: "Ангеле Христов",
@@ -339,7 +339,6 @@ export const eveningRule: Prayer = {
     prayersLibrary.nachalnye.items[6],
     prayersLibrary.tsaryuNebesny.items[0],
     prayersLibrary.otcheNash.items[0],
-    prayersLibrary.psalom50.items[0],
     prayersLibrary.vechemZlatoust.items[0],
     prayersLibrary.angeleVecher.items[0],
     prayersLibrary.bogoroditseDevo.items[0],
