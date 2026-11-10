@@ -70,20 +70,23 @@ export default function HomeScreen({
   );
   const liked = likedVerses.includes(verse.ref);
 
-  /* Ближайший храм — из официальной базы карты РПЦ */
-  const [nearest, setNearest] = useState<NearestChurch | null>(null);
+  /* Ближайший храм показываем только для подтверждённой геопозиции.
+     Результат привязан к координатам, чтобы не показывать старый храм после перемещения. */
+  const [nearestResult, setNearestResult] = useState<{
+    key: string;
+    church: NearestChurch | null;
+  } | null>(null);
+  const geoKey = `${geo.lat},${geo.lng}`;
+  const nearest = geo.accurate && nearestResult?.key === geoKey
+    ? nearestResult.church
+    : null;
   useEffect(() => {
+    if (!geo.accurate) return;
     let cancelled = false;
-    if (!geo.accurate) {
-      setNearest(null);
-      return () => {
-        cancelled = true;
-      };
-    }
     const ac = new AbortController();
     fetchNearestChurch(geo.lat, geo.lng, { signal: ac.signal })
       .then((r) => {
-        if (!cancelled) setNearest(r);
+        if (!cancelled) setNearestResult({ key: geoKey, church: r });
       })
       .catch(() => {
         /* база недоступна — карточка останется с обычной подписью */
@@ -92,7 +95,7 @@ export default function HomeScreen({
       cancelled = true;
       ac.abort();
     };
-  }, [geo.lat, geo.lng, geo.accurate]);
+  }, [geo.lat, geo.lng, geo.accurate, geoKey]);
 
   /* Порядок карточек: сначала отмеченные в анкете интересы, затем остальные */
   let order: CardKey[] = [];
