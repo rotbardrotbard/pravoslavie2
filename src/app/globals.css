@@ -1,0 +1,388 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: #ffffff;
+  --foreground: #181d24;
+  --card: #ffffff;
+  --card-foreground: #181d24;
+  --popover: #ffffff;
+  --popover-foreground: #181d24;
+  --primary: #181d24;
+  --primary-foreground: #ffffff;
+  --secondary: #f5f5f5;
+  --secondary-foreground: #181d24;
+  --muted: #f5f5f5;
+  --muted-foreground: #777f86;
+  --accent: #f5f5f5;
+  --accent-foreground: #181d24;
+  --destructive: #a81414;
+  --border: #e6e8ea;
+  --input: #e6e8ea;
+  --ring: #181d24;
+  --chart-1: #181d24;
+  --chart-2: #777f86;
+  --chart-3: #a81414;
+  --chart-4: #3f4a53;
+  --chart-5: #aeb3b8;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #181d24;
+  --sidebar-primary: #181d24;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f5f5f5;
+  --sidebar-accent-foreground: #181d24;
+  --sidebar-border: #e6e8ea;
+  --sidebar-ring: #181d24;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    background: #e9eaec; /* фон за пределами колонки приложения на десктопе */
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Golos Text", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   «Православные» — мини-приложение для ОК (шаг 3, боевая версия)
+   Дизайн-референс: фирменный стиль ANTIПA LAVKA (antipa-lavka.ru)
+   Светло-серый фон · почти чёрный · серо-синие полутона ·
+   красный акцент · антиква Cormorant Garamond + гротеск
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  --an-bg: #f5f5f5;
+  --an-card: #ffffff;
+  --an-soft: #fafafa;
+  --an-tile: #f1f2f3;
+  --an-ink: #181d24;
+  --an-ink-soft: #777f86;
+  --an-ink-faint: #aeb3b8;
+  --an-line: #e6e8ea;
+  --an-line-strong: #d9dcde;
+  --an-accent: #a81414;
+  --an-slate: #3f4a53;
+  --an-quiet: #9aa1a6;
+  --an-bar: rgba(245, 245, 245, 0.94);
+  --an-feast-bg: #f8e9e9;   /* фон дня с праздником в календаре */
+  --an-feast-line: #eec9c9;
+}
+
+/* Колонка приложения: на телефоне — вся ширина, на десктопе —
+   центральная колонка (как мини-приложение внутри ОК web) */
+.app-column {
+  background: var(--an-bg);
+  min-height: 100dvh;
+}
+@media (min-width: 768px) {
+  .app-column {
+    border-left: 1px solid var(--an-line-strong);
+    border-right: 1px solid var(--an-line-strong);
+    box-shadow: 0 0 40px rgba(24, 29, 36, 0.07);
+  }
+}
+
+.pr-root {
+  background:
+    radial-gradient(900px 420px at 50% -8%, #ffffff, transparent 70%),
+    var(--an-bg);
+}
+
+/* ── Тёмная тема («Оформление интерфейса» → «Тёмная») ──
+   Переопределяем палитру Antipa: те же пропорции, приглушённые
+   тона чернил вместо белых карточек. Без фильтров и инверсий. */
+.pr-dark {
+  --an-bg: #12161b;
+  --an-card: #1b2129;
+  --an-soft: #20262e;
+  --an-tile: #262e37;
+  --an-ink: #e7eaed;
+  --an-ink-soft: #98a2ab;
+  --an-ink-faint: #6a7580;
+  --an-line: #2b333c;
+  --an-line-strong: #39434d;
+  --an-accent: #d4635a;
+  --an-slate: #465560;
+  --an-quiet: #6b757e;
+  --an-bar: rgba(18, 22, 27, 0.94);
+  --an-feast-bg: #33262a;
+  --an-feast-line: #55393d;
+  background:
+    radial-gradient(900px 420px at 50% -8%, #1c232b, transparent 70%),
+    var(--an-bg);
+}
+
+.pr-parchment {
+  background: var(--an-bg);
+}
+
+/* Гротеск — базовый шрифт интерфейса (аналог Mabry) */
+.pr-serif {
+  font-family: "Golos Text", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+/* Антиква — заголовки и крупные высказывания (аналог Cormorant Garamond с сайта ANTIПA) */
+.pr-display {
+  font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+/* Чтение: молитвы, Писание, цитаты */
+.pr-read {
+  font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  font-weight: 500;
+  font-size: 1.06em;
+  line-height: 1.72;
+}
+
+/* Карточка: белый лист на светло-сером фоне, тонкий кант */
+.orn-card {
+  background: var(--an-card);
+  border: 1px solid var(--an-line);
+  border-radius: 14px;
+  box-shadow: 0 1px 2px rgba(24, 29, 36, 0.05);
+}
+
+.orn-card-soft {
+  background: var(--an-card);
+  border: 1px solid var(--an-line);
+  border-radius: 14px;
+}
+
+/* Тёмный акцентный блок (почти чёрный, как у ANTIПA) */
+.orn-ink-banner {
+  background: var(--an-ink);
+  color: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(24, 29, 36, 0.16);
+}
+
+/* Тонкий разделитель с ромбом */
+.an-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--an-line-strong);
+}
+.an-divider::before,
+.an-divider::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: var(--an-line);
+}
+
+.pr-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border-radius: 10px;
+  font-family: "Golos Text", "Inter", system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.86rem;
+  padding: 0.6rem 1rem;
+  min-height: 44px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease,
+    opacity 0.12s ease;
+  cursor: pointer;
+  user-select: none;
+}
+.pr-btn:active {
+  transform: translateY(1px);
+}
+.pr-btn-primary {
+  background: var(--an-ink);
+  color: #ffffff;
+  border: 1px solid var(--an-ink);
+}
+.pr-btn-primary:hover {
+  background: #232a33;
+}
+.pr-dark .pr-btn-primary:hover {
+  background: #2c3540;
+}
+.pr-btn-secondary {
+  background: var(--an-card);
+  color: var(--an-ink);
+  border: 1px solid var(--an-line-strong);
+}
+.pr-btn-secondary:hover {
+  border-color: var(--an-ink);
+}
+.pr-btn-accent {
+  background: var(--an-accent);
+  color: #ffffff;
+  border: 1px solid var(--an-accent);
+}
+.pr-btn-accent:hover {
+  background: #8f1010;
+}
+
+.pr-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border-radius: 999px;
+  border: 1px solid var(--an-line-strong);
+  color: var(--an-ink-soft);
+  background: var(--an-card);
+  font-size: 0.72rem;
+  font-family: "Golos Text", "Inter", system-ui, sans-serif;
+  font-weight: 500;
+  padding: 0.25rem 0.65rem;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+}
+.pr-chip:hover {
+  color: var(--an-ink);
+  border-color: var(--an-ink-soft);
+}
+.pr-chip-active {
+  background: var(--an-ink);
+  color: #ffffff;
+  border-color: var(--an-ink);
+}
+.pr-chip-active:hover {
+  color: #ffffff;
+}
+
+.pr-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(24, 29, 36, 0.25) transparent;
+}
+.pr-scroll::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.pr-scroll::-webkit-scrollbar-thumb {
+  background: rgba(24, 29, 36, 0.25);
+  border-radius: 4px;
+}
+.pr-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Leaflet: убираем синюю рамку фокуса, стилизуем зум */
+.leaflet-container {
+  font-family: "Golos Text", "Inter", system-ui, sans-serif;
+  background: #eef0f2;
+}
+.leaflet-bar a {
+  background: #ffffff !important;
+  color: var(--an-ink) !important;
+  border-color: var(--an-line) !important;
+}
+
+/* Режим «Вечернее чтение» удалён — заменён полноценной тёмной темой .pr-dark */
+
+@keyframes pr-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-up {
+  animation: pr-fade-up 0.28s ease both;
+}
+
+@keyframes pr-slide-up {
+  from {
+    opacity: 0.4;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-slide-up {
+  animation: pr-slide-up 0.24s ease both;
+}
+
+@keyframes pr-pulse-dot {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(168, 20, 20, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 7px rgba(168, 20, 20, 0);
+  }
+}
+.animate-pulse-dot {
+  animation: pr-pulse-dot 1.8s ease-in-out infinite;
+}
+
+@keyframes pr-toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+.animate-toast {
+  animation: pr-toast-in 0.2s ease both;
+}
